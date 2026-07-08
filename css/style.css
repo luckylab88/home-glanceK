@@ -1,0 +1,171 @@
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; background: #eee; color: #000; }
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  -webkit-text-size-adjust: 100%;
+}
+.page {
+  width: 758px;
+  height: 1024px;
+  margin: 0 auto;
+  background: #fff;
+  padding: 52px 56px 36px;
+  overflow: hidden;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+.time {
+  font-size: 92px;
+  line-height: .92;
+  font-weight: 800;
+  letter-spacing: -4px;
+}
+.date {
+  margin-top: 24px;
+  font-size: 25px;
+  font-weight: 500;
+}
+.world-time {
+  padding-top: 10px;
+  font-size: 28px;
+  line-height: 1.22;
+  font-weight: 800;
+  text-align: left;
+  min-width: 165px;
+}
+.lunar {
+  margin-top: 10px;
+  font-weight: 700;
+  font-size: 25px;
+  white-space: nowrap;
+}
+.rule {
+  height: 2px;
+  background: #000;
+  margin: 12px 0 28px;
+}
+.weather {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-height: 150px;
+}
+.current {
+  display: flex;
+  align-items: center;
+}
+.weather-icon {
+  width: 70px;
+  height: 70px;
+  margin-right: 26px;
+}
+.temp {
+  font-size: 82px;
+  line-height: .9;
+  font-weight: 800;
+  letter-spacing: -3px;
+}
+.desc {
+  margin-top: 12px;
+  font-size: 25px;
+  font-weight: 700;
+}
+.today {
+  border-left: 2px solid #ccc;
+  padding-left: 34px;
+  min-width: 180px;
+  font-size: 27px;
+  line-height: 1.25;
+  font-weight: 800;
+}
+.today #sunset {
+  margin-top: 14px;
+  font-size: 20px;
+  font-weight: 700;
+}
+.status {
+  border-top: 2px solid #000;
+  border-bottom: 2px solid #000;
+  margin: 20px 0 14px;
+  padding: 11px 0;
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 700;
+}
+.cards {
+  display: flex;
+  border-bottom: 2px solid #000;
+  margin-bottom: 16px;
+}
+.card {
+  width: 50%;
+  min-height: 126px;
+  padding: 20px 28px 16px;
+}
+.card + .card {
+  border-left: 2px solid #000;
+}
+.label {
+  font-size: 20px;
+  font-weight: 700;
+  color: #555;
+  letter-spacing: 1.5px;
+}
+.card-main {
+  margin-top: 14px;
+  font-size: 31px;
+  line-height: 1.05;
+  font-weight: 800;
+}
+.card-sub {
+  margin-top: 8px;
+  font-size: 23px;
+  line-height: 1.05;
+  font-weight: 600;
+}
+.forecast h2 {
+  font-size: 26px;
+  margin: 0 0 12px;
+}
+.forecast-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 46px;
+}
+.forecast-row {
+  display: grid;
+  grid-template-columns: 44px 26px 38px 116px 42px;
+  align-items: center;
+  height: 33px;
+  font-size: 20px;
+  font-weight: 800;
+}
+.forecast-icon { text-align: center; font-size: 18px; }
+.bar {
+  position: relative;
+  height: 8px;
+  border-radius: 4px;
+  background: #d9d9d9;
+  overflow: hidden;
+}
+.bar-fill {
+  position: absolute;
+  top: 0;
+  height: 8px;
+  border-radius: 4px;
+  background: #000;
+}
+footer {
+  margin-top: 10px;
+  border-top: 1px solid #bbb;
+  padding-top: 12px;
+  font-size: 15px;
+  color: #555;
+}
+footer.stale { font-weight: 800; color: #000; }
+@media (max-width: 800px) {
+  .page { margin: 0; }
+}

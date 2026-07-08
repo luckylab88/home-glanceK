@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Home Glance</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <main class="page">
+    <header class="header">
+      <section class="local-time">
+        <div id="time" class="time">--:--</div>
+        <div id="date" class="date">---</div>
+      </section>
+      <section class="world-time">
+        <div id="hk-time">HK --:--</div>
+        <div id="ny-time">NY --:--</div>
+        <div id="lunar" class="lunar">--</div>
+      </section>
+    </header>
+
+    <div class="rule"></div>
+
+    <section class="weather">
+      <div class="current">
+        <svg class="weather-icon" viewBox="0 0 64 64" aria-hidden="true">
+          <circle cx="32" cy="32" r="12" fill="none" stroke="currentColor" stroke-width="4"/>
+          <g stroke="currentColor" stroke-width="4" stroke-linecap="round">
+            <line x1="32" y1="4" x2="32" y2="13"/>
+            <line x1="32" y1="51" x2="32" y2="60"/>
+            <line x1="4" y1="32" x2="13" y2="32"/>
+            <line x1="51" y1="32" x2="60" y2="32"/>
+            <line x1="12" y1="12" x2="18" y2="18"/>
+            <line x1="46" y1="46" x2="52" y2="52"/>
+            <line x1="12" y1="52" x2="18" y2="46"/>
+            <line x1="46" y1="18" x2="52" y2="12"/>
+          </g>
+        </svg>
+        <div>
+          <div id="temp" class="temp">--°</div>
+          <div id="desc" class="desc">Feels --° • --</div>
+        </div>
+      </div>
+
+      <div class="today">
+        <div id="high">▲ --°</div>
+        <div id="low">▼ --°</div>
+        <div id="sunset">Sunset --:--</div>
+      </div>
+    </section>
+
+    <section id="status" class="status">Checking weather…</section>
+
+    <section class="cards">
+      <div class="card">
+        <div class="label">TODAY</div>
+        <div id="today-detail" class="card-main">Weather</div>
+        <div id="today-sub" class="card-sub">Loading</div>
+      </div>
+      <div class="card">
+        <div class="label">EVENT</div>
+        <div id="event-main" class="card-main">No events</div>
+        <div id="event-sub" class="card-sub">Today</div>
+      </div>
+    </section>
+
+    <section class="forecast">
+      <h2>10-Day Forecast</h2>
+      <div id="forecast-grid" class="forecast-grid"></div>
+    </section>
+
+    <footer id="updated">Updated --</footer>
+  </main>
+
+  <script src="js/config.js"></script>
+  <script src="js/lunar.js"></script>
+  <script src="js/weather.js"></script>
+  <script src="js/event.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
