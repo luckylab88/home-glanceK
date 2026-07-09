@@ -1,3 +1,3 @@
 # Home Glance
 
-v0.8 normal clock: forecast crop fixed, no flip clock, adaptive weather accent.
+v0.9: public Rugby reference location and 24 solar terms.
