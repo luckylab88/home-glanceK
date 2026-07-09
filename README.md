@@ -1,3 +1,3 @@
 # Home Glance
 
-v0.6: layout freeze, weather overlap fixed, first real lunar via Intl.
+v0.7: fix lunar parser and weather description wrapping.

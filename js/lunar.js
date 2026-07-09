@@ -1,22 +1,20 @@
-(function () {
-  function clean(text) {
-    if (!text) return "";
-    text = text.replace(/\s/g, "");
-    text = text.replace(/[甲乙丙丁戊己庚辛壬癸][子丑寅卯辰巳午未申酉戌亥]/g, "");
-    text = text.replace(/年/g, "");
-    return text;
+(function(){
+  function monthName(n){return["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"][n]||"";}
+  function dayName(n){return["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十","廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"][n]||"";}
+  function parseIntl(date){
+    try{
+      var parts=new Intl.DateTimeFormat("en-u-ca-chinese",{month:"numeric",day:"numeric"}).formatToParts(date);
+      var m=null,d=null;
+      for(var i=0;i<parts.length;i++){
+        if(parts[i].type==="month")m=parseInt(parts[i].value,10);
+        if(parts[i].type==="day")d=parseInt(parts[i].value,10);
+      }
+      if(m&&d)return monthName(m)+dayName(d);
+    }catch(e){}
+    return "";
   }
-  function tryIntlChineseDate(date) {
-    try {
-      var raw = new Intl.DateTimeFormat("zh-Hant-u-ca-chinese", { month: "long", day: "numeric" }).format(date);
-      return clean(raw);
-    } catch (e) { return ""; }
-  }
-  window.HomeGlanceLunar = {
-    getText: function (date) {
-      var text = tryIntlChineseDate(date);
-      if (text && text.length <= 8 && text.indexOf("M") === -1) return text;
-      return "農曆";
-    }
-  };
+  window.HomeGlanceLunar={getText:function(date){
+    var s=parseIntl(date);
+    return s||"農曆";
+  }};
 })();

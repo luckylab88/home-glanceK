@@ -1,10 +1,1 @@
-(function () {
-  window.HomeGlanceEvent = {
-    getEvent: function (weather) {
-      if (weather && weather.uv >= 6 && weather.high >= 28) {
-        return { main: "Heat Alert", sub: "High UV", type: "hot" };
-      }
-      return { main: "No events", sub: "Today", type: "normal" };
-    }
-  };
-})();
+(function(){window.HomeGlanceEvent={getEvent:function(weather){if(weather&&weather.uv>=6&&weather.high>=28)return{main:"Heat Alert",sub:"High UV",type:"hot"};return{main:"No events",sub:"Today",type:"normal"};}};})();
