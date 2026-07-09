@@ -1,6 +1,5 @@
 (function () {
   var lastUpdated = null;
-  var latestWeather = null;
 
   function el(id) { return document.getElementById(id); }
   function pad(n) { return n < 10 ? "0" + n : "" + n; }
@@ -56,7 +55,7 @@
       row.className = "forecast-row";
 
       var start = Math.round(((d.low - min) / range) * 100);
-      var width = Math.max(8, Math.round(((d.high - d.low) / range) * 100));
+      var width = Math.max(10, Math.round(((d.high - d.low) / range) * 100));
 
       row.innerHTML =
         "<div>" + dayName(d.date) + "</div>" +
@@ -68,10 +67,8 @@
     });
   }
 
-
   function setMainIconClass(w) {
     var icon = el("main-icon");
-    if (!icon || !icon.className || !icon.className.baseVal) return;
     icon.className.baseVal = "weather-icon sun";
     if (w.code >= 51 && w.code <= 82) icon.className.baseVal = "weather-icon rain";
     else if (w.code >= 2 && w.code <= 48) icon.className.baseVal = "weather-icon cloud";
@@ -80,7 +77,6 @@
 
   function renderWeather(w) {
     setMainIconClass(w);
-    latestWeather = w;
     el("temp").textContent = w.temp + "°";
     el("desc").textContent = "Feels " + w.feels + "° • " + w.desc;
     el("high").textContent = "▲ " + w.high + "°";

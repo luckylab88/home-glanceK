@@ -82,8 +82,5 @@
       });
   }
 
-  window.HomeGlanceWeather = {
-    fetchWeather: fetchWeather,
-    icon: codeToIcon
-  };
+  window.HomeGlanceWeather = { fetchWeather: fetchWeather };
 })();

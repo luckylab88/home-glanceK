@@ -1,6 +1,3 @@
 # Home Glance
 
-A simple Kindle-friendly home information display.
-
-## Deploy
-Upload this folder to GitHub Pages. Open the GitHub Pages URL on Kindle Browser.
+v0.6: layout freeze, weather overlap fixed, first real lunar via Intl.
