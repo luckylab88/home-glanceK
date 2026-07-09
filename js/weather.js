@@ -44,12 +44,14 @@
         var now = new Date();
 
         var rainText = "Humidity " + Math.round(current.relative_humidity_2m || 0) + "%";
+        var rainSoon = false;
         if (hourly.time && hourly.precipitation) {
           for (var i = 0; i < hourly.time.length; i++) {
             var t = new Date(hourly.time[i]);
             var minutes = Math.round((t - now) / 60000);
             if (minutes >= 0 && minutes <= 60 && hourly.precipitation[i] > 0) {
               rainText = "Rain in " + minutes + " min";
+              rainSoon = true;
               break;
             }
           }
@@ -66,6 +68,7 @@
           sunset: timePart(daily.sunset[0]),
           uv: Math.round(daily.uv_index_max[0] || 0),
           status: rainText,
+          rainSoon: rainSoon,
           forecast: daily.time.map(function (date, i) {
             return {
               date: date,

@@ -68,7 +68,18 @@
     });
   }
 
+
+  function setMainIconClass(w) {
+    var icon = el("main-icon");
+    if (!icon || !icon.className || !icon.className.baseVal) return;
+    icon.className.baseVal = "weather-icon sun";
+    if (w.code >= 51 && w.code <= 82) icon.className.baseVal = "weather-icon rain";
+    else if (w.code >= 2 && w.code <= 48) icon.className.baseVal = "weather-icon cloud";
+    else if (w.high >= 30) icon.className.baseVal = "weather-icon hot";
+  }
+
   function renderWeather(w) {
+    setMainIconClass(w);
     latestWeather = w;
     el("temp").textContent = w.temp + "°";
     el("desc").textContent = "Feels " + w.feels + "° • " + w.desc;
@@ -76,12 +87,14 @@
     el("low").textContent = "▼ " + w.low + "°";
     el("sunset").textContent = "Sunset " + w.sunset;
     el("status").textContent = w.status;
+    el("status").className = w.rainSoon ? "status rain" : "status";
     el("today-detail").textContent = w.high + "° / " + w.low + "°";
     el("today-sub").textContent = "Humidity " + w.humidity + "%";
 
     var ev = window.HomeGlanceEvent.getEvent(w);
     el("event-main").textContent = ev.main;
     el("event-sub").textContent = ev.sub;
+    el("event-main").className = ev.type === "hot" ? "card-main hot" : "card-main";
 
     renderForecast(w.forecast);
     lastUpdated = new Date();
