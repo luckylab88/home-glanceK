@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <main class="page">
+  <main id="page" class="page">
     <header class="header">
       <section class="local-time">
         <div id="time" class="time">--:--</div>
@@ -36,7 +36,10 @@
         </svg>
         <div class="current-text">
           <div id="temp" class="temp">--°</div>
-          <div id="desc" class="desc">Feels --° • --</div>
+          <div class="desc">
+            <div id="feels" class="feels">Feels --°</div>
+            <div id="weather-desc" class="weather-desc">--</div>
+          </div>
         </div>
       </div>
       <div class="today">
@@ -65,6 +68,7 @@
       <h2>10-Day Forecast</h2>
       <div id="forecast-grid" class="forecast-grid"></div>
     </section>
+
     <footer id="updated">Updated --</footer>
   </main>
   <script src="js/config.js"></script>
