@@ -40,3 +40,9 @@ footer.stale{font-weight:800;color:#000}
 @media(max-width:520px){
 .page{padding:24px 24px 18px}.header{gap:12px;padding-bottom:12px;margin-bottom:16px}.time{font-size:62px;letter-spacing:-3px}.date-line{font-size:14px;margin-top:14px}.date-dot{margin:0 4px}.world-time{font-size:18px;flex-basis:98px}.weather{grid-template-columns:minmax(0,1fr) 90px;column-gap:12px;min-height:106px}.current{grid-template-columns:46px minmax(0,1fr);column-gap:14px}.weather-icon{width:46px;height:46px}.temp{font-size:52px}.desc{font-size:15px;margin-top:7px}.today{padding-left:12px;font-size:17px}.today #sunset{font-size:11px;margin-top:8px}.status{font-size:17px;padding:7px 0;margin:12px 0 9px}.card{min-height:86px;padding:12px 14px 10px}.label{font-size:12px}.card-main{font-size:19px;margin-top:9px}.card-sub{font-size:14px}.forecast h2{font-size:17px}.forecast-grid{column-gap:18px}.forecast-row{grid-template-columns:30px 18px 25px 64px 29px;height:25px;font-size:12px}footer{font-size:10px}
 }
+
+#event-main.quote{font-size:22px;line-height:1.18;font-weight:600;color:#222;}
+#event-main.rain,#event-main.storm{color:#2276a8;}
+#event-main.snow,#event-main.frost{color:#557a95;}
+#event-main.wind,#event-main.fog{color:#555;}
+#event-main.uv,#event-main.hot{color:#9b2e14;}

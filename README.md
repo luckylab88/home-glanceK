@@ -1,3 +1,3 @@
-# Home Glance
+# Home Glance v1.0
 
-v0.9: public Rugby reference location and 24 solar terms.
+Fire HD / Silk Browser weather dashboard. Includes real weather data, lunar date, day-only solar terms, UV, sunrise/sunset switching, weather notices and daily Cantonese quotes.
