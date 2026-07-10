@@ -7,5 +7,10 @@ window.HG_CONFIG={
   forecastDays:10,
   updateWeatherMinutes:15,
   showSolarTerm:true,
-  adaptiveTheme:true
+  adaptiveTheme:true,
+
+  // Official public data sources.
+  useHkoCalendar:true,
+  useMetOfficeWarnings:true,
+  metOfficeArcgisItemId:"3f33c180f82a460ebc6f241d68841cd7"
 };

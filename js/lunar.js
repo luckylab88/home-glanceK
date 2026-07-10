@@ -1,84 +1,127 @@
 (function(){
-  function monthName(n){
-    return ["","正月","二月","三月","四月","五月","六月","七月","八月","九月","十月","十一月","十二月"][n] || "";
+  var calendarByDate = {};
+  var loadedYear = null;
+
+  var monthNames = ["","正月","二月","三月","四月","五月","六月",
+    "七月","八月","九月","十月","十一月","十二月"];
+  var dayNames = ["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十",
+    "十一","十二","十三","十四","十五","十六","十七","十八","十九","二十",
+    "廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"];
+
+  var termMap = {
+    "Moderate Cold":"小寒","Severe Cold":"大寒","Spring Commences":"立春",
+    "Spring Showers":"雨水","Insects Waken":"驚蟄","Vernal Equinox":"春分",
+    "Bright & Clear":"清明","Corn Rain":"穀雨","Summer Commences":"立夏",
+    "Corn Forms":"小滿","Corn on Ear":"芒種","Summer Solstice":"夏至",
+    "Moderate Heat":"小暑","Great Heat":"大暑","Autumn Commences":"立秋",
+    "End of Heat":"處暑","White Dew":"白露","Autumnal Equinox":"秋分",
+    "Cold Dew":"寒露","Frost":"霜降","Winter Commences":"立冬",
+    "Light Snow":"小雪","Heavy Snow":"大雪","Winter Solstice":"冬至"
+  };
+
+  function pad(n){ return n < 10 ? "0" + n : "" + n; }
+  function key(date){
+    return date.getFullYear()+"-"+pad(date.getMonth()+1)+"-"+pad(date.getDate());
   }
-  function dayName(n){
-    return ["","初一","初二","初三","初四","初五","初六","初七","初八","初九","初十","十一","十二","十三","十四","十五","十六","十七","十八","十九","二十","廿一","廿二","廿三","廿四","廿五","廿六","廿七","廿八","廿九","三十"][n] || "";
-  }
+
   function parseIntl(date){
     try{
-      var parts=new Intl.DateTimeFormat("en-u-ca-chinese",{month:"numeric",day:"numeric"}).formatToParts(date);
+      var parts = new Intl.DateTimeFormat("en-u-ca-chinese",{
+        month:"numeric",day:"numeric"
+      }).formatToParts(date);
       var m=null,d=null;
       for(var i=0;i<parts.length;i++){
         if(parts[i].type==="month") m=parseInt(parts[i].value,10);
         if(parts[i].type==="day") d=parseInt(parts[i].value,10);
       }
-      if(m&&d) return monthName(m)+dayName(d);
+      if(m && d) return monthNames[m]+dayNames[d];
     }catch(e){}
-    return "";
+    return "農曆";
   }
 
-  var termNames=["小寒","大寒","立春","雨水","驚蟄","春分","清明","穀雨","立夏","小滿","芒種","夏至","小暑","大暑","立秋","處暑","白露","秋分","寒露","霜降","立冬","小雪","大雪","冬至"];
-  var targetAngles=[285,300,315,330,345,360,375,390,405,420,435,450,465,480,495,510,525,540,555,570,585,600,615,630];
-  var cache={};
+  function parseHkoText(text){
+    var result = {};
+    var currentMonth = null;
+    var re = /(\d{4})\/(\d{1,2})\/(\d{1,2})\s+([\s\S]*?)(?=\d{4}\/\d{1,2}\/\d{1,2}\s+|$)/g;
+    var match;
 
-  function norm(a){ a%=360; return a<0?a+360:a; }
-  function julianDay(ms){ return ms/86400000 + 2440587.5; }
-  function solarLongitude(ms){
-    var jd=julianDay(ms), T=(jd-2451545.0)/36525;
-    var L0=norm(280.46646 + 36000.76983*T + 0.0003032*T*T);
-    var M=norm(357.52911 + 35999.05029*T - 0.0001537*T*T);
-    var Mr=M*Math.PI/180;
-    var C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(Mr)
-      +(0.019993-0.000101*T)*Math.sin(2*Mr)
-      +0.000289*Math.sin(3*Mr);
-    var trueLong=L0+C;
-    var omega=(125.04-1934.136*T)*Math.PI/180;
-    return norm(trueLong-0.00569-0.00478*Math.sin(omega));
-  }
-  function unwrappedLongitude(ms){
-    var lon=solarLongitude(ms);
-    var jan1=Date.UTC(new Date(ms).getUTCFullYear(),0,1,0,0,0);
-    var lon0=solarLongitude(jan1);
-    var days=(ms-jan1)/86400000;
-    var expected=lon0+days*0.98564736;
-    while(lon<expected-180) lon+=360;
-    while(lon>expected+180) lon-=360;
-    return lon;
-  }
-  function hkDateKey(date){
-    try{
-      var parts=new Intl.DateTimeFormat("en-CA",{timeZone:"Asia/Hong_Kong",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(date);
-      var y="",m="",d="";
-      for(var i=0;i<parts.length;i++){
-        if(parts[i].type==="year") y=parts[i].value;
-        if(parts[i].type==="month") m=parts[i].value;
-        if(parts[i].type==="day") d=parts[i].value;
+    while((match = re.exec(text)) !== null){
+      var y=+match[1], m=+match[2], d=+match[3];
+      var body = match[4].replace(/\s+/g," ").trim();
+      var lunarDay = null;
+
+      var monthMatch = body.match(/(\d{1,2})(?:st|nd|rd|th)\s+Lunar Month/i);
+      if(monthMatch){
+        currentMonth = parseInt(monthMatch[1],10);
+        lunarDay = 1;
+      }else{
+        var dayMatch = body.match(/^(\d{1,2})\b/);
+        if(dayMatch) lunarDay = parseInt(dayMatch[1],10);
       }
-      return y+"-"+m+"-"+d;
-    }catch(e){
-      return date.getFullYear()+"-"+String(date.getMonth()+1).padStart(2,"0")+"-"+String(date.getDate()).padStart(2,"0");
-    }
-  }
-  function buildTerms(year){
-    if(cache[year]) return cache[year];
-    var result={};
-    var start=Date.UTC(year,0,1,0,0,0), end=Date.UTC(year+1,0,1,0,0,0);
-    for(var i=0;i<targetAngles.length;i++){
-      var target=targetAngles[i];
-      var lo=start, hi=end;
-      for(var n=0;n<50;n++){
-        var mid=(lo+hi)/2;
-        if(unwrappedLongitude(mid)<target) lo=mid; else hi=mid;
+
+      var solarTerm = "";
+      for(var english in termMap){
+        if(Object.prototype.hasOwnProperty.call(termMap,english) && body.indexOf(english) !== -1){
+          solarTerm = termMap[english];
+          break;
+        }
       }
-      result[hkDateKey(new Date((lo+hi)/2))]=termNames[i];
+
+      var k = y+"-"+pad(m)+"-"+pad(d);
+      result[k] = {
+        lunar: currentMonth && lunarDay ? monthNames[currentMonth]+dayNames[lunarDay] : "",
+        solarTerm: solarTerm
+      };
     }
-    cache[year]=result;
     return result;
   }
-  function getSolarTerm(date){
-    var key=hkDateKey(date), y=parseInt(key.slice(0,4),10);
-    return buildTerms(y)[key] || "";
+
+  function load(year){
+    if(loadedYear === year && Object.keys(calendarByDate).length) return Promise.resolve();
+
+    var cacheKey = "homeglance-hko-calendar-"+year;
+    try{
+      var cached = localStorage.getItem(cacheKey);
+      if(cached){
+        calendarByDate = JSON.parse(cached);
+        loadedYear = year;
+        return Promise.resolve();
+      }
+    }catch(e){}
+
+    var url = "https://www.weather.gov.hk/en/gts/time/calendar/text/files/T"+year+"e.txt";
+    return fetch(url,{cache:"no-cache"})
+      .then(function(r){
+        if(!r.ok) throw new Error("HKO calendar unavailable");
+        return r.text();
+      })
+      .then(function(text){
+        var parsed = parseHkoText(text);
+        if(!Object.keys(parsed).length) throw new Error("HKO calendar parse failed");
+        calendarByDate = parsed;
+        loadedYear = year;
+        try{ localStorage.setItem(cacheKey,JSON.stringify(parsed)); }catch(e){}
+      })
+      .catch(function(){
+        calendarByDate = {};
+        loadedYear = year;
+      });
   }
-  window.HomeGlanceLunar={getText:function(date){return parseIntl(date)||"農曆";},getSolarTerm:getSolarTerm};
+
+  function getText(date){
+    var item = calendarByDate[key(date)];
+    return item && item.lunar ? item.lunar : parseIntl(date);
+  }
+
+  function getSolarTerm(date){
+    var item = calendarByDate[key(date)];
+    return item && item.solarTerm ? item.solarTerm : "";
+  }
+
+  window.HomeGlanceLunar = {
+    load:load,
+    getText:getText,
+    getSolarTerm:getSolarTerm,
+    source:"Hong Kong Observatory"
+  };
 })();

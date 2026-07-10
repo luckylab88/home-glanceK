@@ -46,3 +46,15 @@ footer.stale{font-weight:800;color:#000}
 #event-main.snow,#event-main.frost{color:#557a95;}
 #event-main.wind,#event-main.fog{color:#555;}
 #event-main.uv,#event-main.hot{color:#9b2e14;}
+
+/* Official Met Office warning colours */
+.card-main.met-yellow{color:#d6a800}
+.card-main.met-amber{color:#e67e22}
+.card-main.met-red{color:#c62828}
+.event-card.met-red-card{border-left:4px solid #c62828}
+.card-sub.official-warning-detail{
+  font-size:16px;
+  line-height:1.1;
+  max-height:36px;
+  overflow:hidden;
+}
