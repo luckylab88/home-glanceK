@@ -6,11 +6,16 @@ window.HG_CONFIG={
   timezone:"Europe/London",
   forecastDays:10,
   updateWeatherMinutes:15,
+
   showSolarTerm:true,
   adaptiveTheme:true,
+  pixelShift:true,
 
   // Official public data sources.
   useHkoCalendar:true,
   useMetOfficeWarnings:true,
-  metOfficeArcgisItemId:"3f33c180f82a460ebc6f241d68841cd7"
+  metOfficeArcgisItemId:"3f33c180f82a460ebc6f241d68841cd7",
+
+  // Smart resume: refresh after wake / returning from YouTube.
+  resumeRefreshAfterMinutes:2
 };

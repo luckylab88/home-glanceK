@@ -58,3 +58,13 @@ footer.stale{font-weight:800;color:#000}
   max-height:36px;
   overflow:hidden;
 }
+
+.debug-panel{
+  margin-top:10px;
+  padding:10px 12px;
+  border:1px dashed #777;
+  background:#f4f4f4;
+  font-size:12px;
+  line-height:1.45;
+  white-space:pre-line;
+}

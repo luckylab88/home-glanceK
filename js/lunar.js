@@ -1,6 +1,7 @@
 (function(){
   var calendarByDate = {};
   var loadedYear = null;
+  var sourceStatus = "not-loaded";
 
   var monthNames = ["","正月","二月","三月","四月","五月","六月",
     "七月","八月","九月","十月","十一月","十二月"];
@@ -39,9 +40,21 @@
     return "農曆";
   }
 
+  function cleanText(text){
+    return text
+      .replace(/\r/g,"\n")
+      .replace(/\u00a0/g," ")
+      .replace(/[ \t]+/g," ")
+      .replace(/\n{2,}/g,"\n");
+  }
+
   function parseHkoText(text){
+    text = cleanText(text);
     var result = {};
     var currentMonth = null;
+    var isLeapMonth = false;
+
+    // Match each dated row, keeping all text until the next dated row.
     var re = /(\d{4})\/(\d{1,2})\/(\d{1,2})\s+([\s\S]*?)(?=\d{4}\/\d{1,2}\/\d{1,2}\s+|$)/g;
     var match;
 
@@ -50,9 +63,12 @@
       var body = match[4].replace(/\s+/g," ").trim();
       var lunarDay = null;
 
-      var monthMatch = body.match(/(\d{1,2})(?:st|nd|rd|th)\s+Lunar Month/i);
+      // HKO may describe the first day as "1st Lunar Month"
+      // and leap months with "Intercalary" / "Leap".
+      var monthMatch = body.match(/(?:(Intercalary|Leap)\s+)?(\d{1,2})(?:st|nd|rd|th)\s+Lunar Month/i);
       if(monthMatch){
-        currentMonth = parseInt(monthMatch[1],10);
+        isLeapMonth = !!monthMatch[1];
+        currentMonth = parseInt(monthMatch[2],10);
         lunarDay = 1;
       }else{
         var dayMatch = body.match(/^(\d{1,2})\b/);
@@ -67,61 +83,75 @@
         }
       }
 
-      var k = y+"-"+pad(m)+"-"+pad(d);
-      result[k] = {
-        lunar: currentMonth && lunarDay ? monthNames[currentMonth]+dayNames[lunarDay] : "",
-        solarTerm: solarTerm
+      var lunar = "";
+      if(currentMonth && lunarDay){
+        lunar = (isLeapMonth ? "閏" : "") + monthNames[currentMonth] + dayNames[lunarDay];
+      }
+
+      result[y+"-"+pad(m)+"-"+pad(d)] = {
+        lunar:lunar,
+        solarTerm:solarTerm
       };
     }
     return result;
   }
 
-  function load(year){
-    if(loadedYear === year && Object.keys(calendarByDate).length) return Promise.resolve();
+  function load(year,force){
+    if(!force && loadedYear===year && Object.keys(calendarByDate).length){
+      return Promise.resolve();
+    }
 
-    var cacheKey = "homeglance-hko-calendar-"+year;
-    try{
-      var cached = localStorage.getItem(cacheKey);
-      if(cached){
-        calendarByDate = JSON.parse(cached);
-        loadedYear = year;
-        return Promise.resolve();
-      }
-    }catch(e){}
+    var cacheKey="homeglance-hko-calendar-"+year+"-v2";
+    if(!force){
+      try{
+        var cached=localStorage.getItem(cacheKey);
+        if(cached){
+          calendarByDate=JSON.parse(cached);
+          loadedYear=year;
+          sourceStatus="hko-cache";
+          return Promise.resolve();
+        }
+      }catch(e){}
+    }
 
-    var url = "https://www.weather.gov.hk/en/gts/time/calendar/text/files/T"+year+"e.txt";
+    var url="https://www.weather.gov.hk/en/gts/time/calendar/text/files/T"+year+"e.txt";
     return fetch(url,{cache:"no-cache"})
       .then(function(r){
-        if(!r.ok) throw new Error("HKO calendar unavailable");
+        if(!r.ok) throw new Error("HKO HTTP "+r.status);
         return r.text();
       })
       .then(function(text){
-        var parsed = parseHkoText(text);
-        if(!Object.keys(parsed).length) throw new Error("HKO calendar parse failed");
-        calendarByDate = parsed;
-        loadedYear = year;
+        var parsed=parseHkoText(text);
+        if(Object.keys(parsed).length < 360) throw new Error("HKO parse incomplete");
+        calendarByDate=parsed;
+        loadedYear=year;
+        sourceStatus="hko-live";
         try{ localStorage.setItem(cacheKey,JSON.stringify(parsed)); }catch(e){}
       })
       .catch(function(){
-        calendarByDate = {};
-        loadedYear = year;
+        calendarByDate={};
+        loadedYear=year;
+        sourceStatus="intl-fallback";
       });
   }
 
   function getText(date){
-    var item = calendarByDate[key(date)];
+    var item=calendarByDate[key(date)];
     return item && item.lunar ? item.lunar : parseIntl(date);
   }
 
   function getSolarTerm(date){
-    var item = calendarByDate[key(date)];
+    var item=calendarByDate[key(date)];
     return item && item.solarTerm ? item.solarTerm : "";
   }
 
-  window.HomeGlanceLunar = {
+  function getStatus(){ return sourceStatus; }
+
+  window.HomeGlanceLunar={
     load:load,
     getText:getText,
     getSolarTerm:getSolarTerm,
+    getStatus:getStatus,
     source:"Hong Kong Observatory"
   };
 })();

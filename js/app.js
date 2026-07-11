@@ -164,16 +164,65 @@
       });
   }
 
-  function start(){
+  var lastVisibleAt=Date.now();
+
+  function isDebug(){
+    return /(?:\?|&)debug=1(?:&|$)/.test(location.search);
+  }
+
+  function updateDebug(){
+    var panel=el("debug-panel");
+    if(!panel || !isDebug()) return;
+    panel.hidden=false;
+    panel.textContent=
+      "Home Glance v1.1 Stable\n"+
+      "Weather: Open-Meteo\n"+
+      "Lunar / Solar term: "+window.HomeGlanceLunar.getStatus()+"\n"+
+      "Warning: "+window.HomeGlanceWarnings.getStatus()+"\n"+
+      "Warning layers: "+window.HomeGlanceWarnings.getLayers().join(", ")+"\n"+
+      "Location: "+window.HG_CONFIG.locationName;
+  }
+
+  function refreshAll(force){
     var year=new Date().getFullYear();
+    return Promise.all([
+      window.HomeGlanceLunar.load(year,!!force),
+      refreshOfficialWarning(),
+      refreshWeather()
+    ]).then(function(){
+      updateClock();
+      updateDebug();
+    });
+  }
+
+  function handleResume(){
+    var now=Date.now();
+    var mins=(now-lastVisibleAt)/60000;
+    lastVisibleAt=now;
+    if(document.visibilityState==="visible"){
+      updateClock();
+      if(mins >= (window.HG_CONFIG.resumeRefreshAfterMinutes||2)){
+        refreshAll(false);
+      }else{
+        updateDebug();
+      }
+    }
+  }
+
+  function start(){
     Promise.all([
       window.HomeGlanceQuotes.load(),
-      window.HomeGlanceLunar.load(year),
+      window.HomeGlanceLunar.load(new Date().getFullYear()),
       refreshOfficialWarning()
     ]).then(function(){
       updateClock();
-      refreshWeather();
-    });
+      return refreshWeather();
+    }).then(updateDebug);
+
+    document.addEventListener("visibilitychange",handleResume);
+    window.addEventListener("pageshow",handleResume);
+    window.addEventListener("focus",handleResume);
+    window.addEventListener("online",function(){refreshAll(true);});
 
     setInterval(updateClock,60000);
     setInterval(refreshWeather,(window.HG_CONFIG.updateWeatherMinutes||15)*60000);
