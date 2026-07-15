@@ -1,4 +1,4 @@
-# Home Glance v1.1 Stable
+# Home Glance v1.2 Tracker
 
 Designed for Amazon Fire HD with Silk Browser.
 
@@ -18,3 +18,11 @@ Designed for Amazon Fire HD with Silk Browser.
 Add `?debug=1` to the page URL to show the active data-source status.
 
 No API keys or private account data are stored in the page.
+
+## Octopus Tracker
+- Tariff: Octopus Tracker September 2025 (`SILVER-25-09-02`)
+- Electricity region configured as `E`
+- Shows today's price and tomorrow's price when Octopus publishes it.
+- Prices below 20p are green and bold.
+- `Save` appears when tomorrow is below 20p or at least 2p cheaper than today.
+- The tariff API is public; no Octopus account key is stored.

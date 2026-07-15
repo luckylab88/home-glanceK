@@ -166,6 +166,59 @@
 
   var lastVisibleAt=Date.now();
 
+
+  function trackerClass(price){
+    var c=window.HG_CONFIG;
+    if(price < c.trackerCheapThreshold) return "tracker-low";
+    if(price < 25) return "tracker-mid";
+    if(price < 30) return "tracker-high";
+    return "tracker-very-high";
+  }
+
+  function priceSpan(label,price){
+    if(price===null || price===undefined) return "";
+    return "<span class='tracker-label'>"+label+" </span>"+
+      "<span class='"+trackerClass(price)+"'>"+price.toFixed(2)+"p</span>";
+  }
+
+  function renderTracker(){
+    var holder=el("tracker-price");
+    if(!holder || !window.HomeGlanceTracker) return;
+    var s=window.HomeGlanceTracker.getState();
+
+    if(s.status==="loading"){
+      holder.textContent="⚡ Tracker loading…";
+      return;
+    }
+    if(s.status==="failed"){
+      holder.textContent="⚡ Tracker unavailable";
+      return;
+    }
+    if(s.today===null){
+      holder.textContent="⚡ Tracker —";
+      return;
+    }
+
+    var html="⚡ "+priceSpan("Today",s.today);
+    if(s.tomorrow!==null){
+      var arrow=s.tomorrow<s.today?"↘":(s.tomorrow>s.today?"↗":"→");
+      html+=" <span class='tracker-arrow'>"+arrow+"</span> "+
+        priceSpan("Tomorrow",s.tomorrow);
+
+      var save=(s.tomorrow < window.HG_CONFIG.trackerCheapThreshold) ||
+        ((s.today-s.tomorrow) >= window.HG_CONFIG.trackerSaveDifference);
+      if(save) html+=" <span class='tracker-save'>Save</span>";
+    }
+    holder.innerHTML=html;
+  }
+
+  function refreshTracker(force){
+    return window.HomeGlanceTracker.load(!!force).then(function(){
+      renderTracker();
+      updateDebug();
+    });
+  }
+
   function isDebug(){
     return /(?:\?|&)debug=1(?:&|$)/.test(location.search);
   }
@@ -180,6 +233,8 @@
       "Lunar / Solar term: "+window.HomeGlanceLunar.getStatus()+"\n"+
       "Warning: "+window.HomeGlanceWarnings.getStatus()+"\n"+
       "Warning layers: "+window.HomeGlanceWarnings.getLayers().join(", ")+"\n"+
+      "Tracker: "+window.HomeGlanceTracker.getState().status+"\n"+
+      "Tracker tariff: "+window.HG_CONFIG.trackerProductCode+" / "+window.HG_CONFIG.trackerRegionCode+"\n"+
       "Location: "+window.HG_CONFIG.locationName;
   }
 
@@ -188,7 +243,8 @@
     return Promise.all([
       window.HomeGlanceLunar.load(year,!!force),
       refreshOfficialWarning(),
-      refreshWeather()
+      refreshWeather(),
+      refreshTracker(!!force)
     ]).then(function(){
       updateClock();
       updateDebug();
@@ -213,7 +269,8 @@
     Promise.all([
       window.HomeGlanceQuotes.load(),
       window.HomeGlanceLunar.load(new Date().getFullYear()),
-      refreshOfficialWarning()
+      refreshOfficialWarning(),
+      refreshTracker(false)
     ]).then(function(){
       updateClock();
       return refreshWeather();
@@ -227,6 +284,8 @@
     setInterval(updateClock,60000);
     setInterval(refreshWeather,(window.HG_CONFIG.updateWeatherMinutes||15)*60000);
     setInterval(refreshOfficialWarning,15*60*1000);
+    setInterval(function(){refreshTracker(false);},
+      (window.HG_CONFIG.trackerRefreshMinutes||30)*60*1000);
   }
 
   start();

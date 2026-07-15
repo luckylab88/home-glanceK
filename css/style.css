@@ -68,3 +68,34 @@ footer.stale{font-weight:800;color:#000}
   line-height:1.45;
   white-space:pre-line;
 }
+
+.footer-row{
+  margin-top:5px;
+  border-top:1px solid #d1d1d1;
+  padding-top:6px;
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:14px;
+  font-size:13px;
+  color:#777;
+  white-space:nowrap;
+}
+.footer-row #updated{
+  margin:0;
+  border:0;
+  padding:0;
+  font-size:inherit;
+  color:inherit;
+}
+.tracker-price{margin-left:auto;text-align:right;color:#333}
+.tracker-price .tracker-low{color:#2e7d32;font-weight:800}
+.tracker-price .tracker-mid{color:#222;font-weight:400}
+.tracker-price .tracker-high{color:#c46a14;font-weight:500}
+.tracker-price .tracker-very-high{color:#b22222;font-weight:800}
+.tracker-price .tracker-save{color:#2e7d32;font-weight:700;margin-left:5px}
+.tracker-price .tracker-arrow{padding:0 3px;color:#777}
+@media(max-width:520px){
+  .footer-row{font-size:10px;gap:8px}
+  .tracker-price .tracker-label{display:none}
+}
