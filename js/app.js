@@ -234,7 +234,9 @@
       "Warning: "+window.HomeGlanceWarnings.getStatus()+"\n"+
       "Warning layers: "+window.HomeGlanceWarnings.getLayers().join(", ")+"\n"+
       "Tracker: "+window.HomeGlanceTracker.getState().status+"\n"+
-      "Tracker tariff: "+window.HG_CONFIG.trackerProductCode+" / "+window.HG_CONFIG.trackerRegionCode+"\n"+
+      "Tracker tariff: "+window.HG_CONFIG.trackerProductCode+"\n"+
+      "Tracker postcode: "+window.HG_CONFIG.trackerPostcode+"\n"+
+      "Tracker region: "+(window.HomeGlanceTracker.getState().region||"—")+"\n"+
       "Location: "+window.HG_CONFIG.locationName;
   }
 

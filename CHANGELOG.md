@@ -1,5 +1,13 @@
 # Changelog
 
+## v1.2.1 Tracker Fix
+- Replaced the estimated region with automatic postcode-to-region lookup.
+- Uses postcode `CV22 5QE`.
+- Matches the verified iPhone Scriptable shortcut logic exactly.
+- Uses Octopus newest-first tariff results: `results[1]` for today and `results[0]` for tomorrow.
+- Added resolved Tracker region to debug mode.
+
+
 ## v1.2 Tracker
 - Added Octopus Tracker electricity price to the footer.
 - Shows today and tomorrow when available.

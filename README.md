@@ -1,4 +1,4 @@
-# Home Glance v1.2 Tracker
+# Home Glance v1.2.1 Tracker Fix
 
 Designed for Amazon Fire HD with Silk Browser.
 
@@ -21,8 +21,14 @@ No API keys or private account data are stored in the page.
 
 ## Octopus Tracker
 - Tariff: Octopus Tracker September 2025 (`SILVER-25-09-02`)
-- Electricity region configured as `E`
+- Distribution region is resolved automatically from postcode `CV22 5QE`.
 - Shows today's price and tomorrow's price when Octopus publishes it.
 - Prices below 20p are green and bold.
 - `Save` appears when tomorrow is below 20p or at least 2p cheaper than today.
 - The tariff API is public; no Octopus account key is stored.
+
+## v1.2.1 price correction
+Tracker now uses the same verified logic as the iPhone Scriptable shortcut:
+1. Resolve the distribution region from postcode.
+2. Build the exact regional Tracker tariff code.
+3. Use Octopus's newest-first results: item 1 is today and item 0 is tomorrow.

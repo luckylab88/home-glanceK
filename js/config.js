@@ -22,7 +22,7 @@ window.HG_CONFIG={
   // Octopus Tracker Electricity.
   trackerEnabled:true,
   trackerProductCode:"SILVER-25-09-02",
-  trackerRegionCode:"E",
+  trackerPostcode:"CV22 5QE",
   trackerRefreshMinutes:30,
   trackerCheapThreshold:20,
   trackerSaveDifference:2
