@@ -20,6 +20,24 @@
     "Light Snow":"小雪","Heavy Snow":"大雪","Winter Solstice":"冬至"
   };
 
+  // Official HKO solar-term dates bundled for local file:// use and CORS fallback.
+  // Source: HKO Gregorian-Lunar Calendar Conversion Tables.
+  var officialSolarTerms = {
+    "2026-01-05":"小寒","2026-01-20":"大寒","2026-02-04":"立春","2026-02-18":"雨水",
+    "2026-03-05":"驚蟄","2026-03-20":"春分","2026-04-05":"清明","2026-04-20":"穀雨",
+    "2026-05-05":"立夏","2026-05-21":"小滿","2026-06-05":"芒種","2026-06-21":"夏至",
+    "2026-07-07":"小暑","2026-07-23":"大暑","2026-08-07":"立秋","2026-08-23":"處暑",
+    "2026-09-07":"白露","2026-09-23":"秋分","2026-10-08":"寒露","2026-10-23":"霜降",
+    "2026-11-07":"立冬","2026-11-22":"小雪","2026-12-07":"大雪","2026-12-22":"冬至",
+
+    "2027-01-05":"小寒","2027-01-20":"大寒","2027-02-04":"立春","2027-02-19":"雨水",
+    "2027-03-06":"驚蟄","2027-03-21":"春分","2027-04-05":"清明","2027-04-20":"穀雨",
+    "2027-05-06":"立夏","2027-05-21":"小滿","2027-06-06":"芒種","2027-06-21":"夏至",
+    "2027-07-07":"小暑","2027-07-23":"大暑","2027-08-08":"立秋","2027-08-23":"處暑",
+    "2027-09-08":"白露","2027-09-23":"秋分","2027-10-08":"寒露","2027-10-23":"霜降",
+    "2027-11-07":"立冬","2027-11-22":"小雪","2027-12-07":"大雪","2027-12-22":"冬至"
+  };
+
   function pad(n){ return n < 10 ? "0" + n : "" + n; }
   function key(date){
     return date.getFullYear()+"-"+pad(date.getMonth()+1)+"-"+pad(date.getDate());
@@ -101,7 +119,7 @@
       return Promise.resolve();
     }
 
-    var cacheKey="homeglance-hko-calendar-"+year+"-v2";
+    var cacheKey="homeglance-hko-calendar-"+year+"-v3";
     if(!force){
       try{
         var cached=localStorage.getItem(cacheKey);
@@ -131,7 +149,7 @@
       .catch(function(){
         calendarByDate={};
         loadedYear=year;
-        sourceStatus="intl-fallback";
+        sourceStatus="hko-terms-bundled+intl-lunar";
       });
   }
 
@@ -141,8 +159,10 @@
   }
 
   function getSolarTerm(date){
-    var item=calendarByDate[key(date)];
-    return item && item.solarTerm ? item.solarTerm : "";
+    var dateKey=key(date);
+    var item=calendarByDate[dateKey];
+    if(item && item.solarTerm) return item.solarTerm;
+    return officialSolarTerms[dateKey] || "";
   }
 
   function getStatus(){ return sourceStatus; }

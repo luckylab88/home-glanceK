@@ -1,5 +1,18 @@
 # Changelog
 
+## v1.2.3 Verified Date Fix
+- Added bundled official HKO solar-term dates for 2026–2027.
+- Fixed missing 大暑 when running locally from `file://`.
+- Preserved date-based Tracker Today/Tomorrow matching.
+
+
+## v1.2.2 Date Fix
+- Fixed morning Tracker offset.
+- Matched Tracker rates by UK calendar date instead of array position.
+- Kept tomorrow blank until Octopus publishes it.
+- Refreshed the HKO cache version for solar-term corrections.
+
+
 ## v1.2.1 Tracker Fix
 - Replaced the estimated region with automatic postcode-to-region lookup.
 - Uses postcode `CV22 5QE`.

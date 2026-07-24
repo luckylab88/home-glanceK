@@ -1,4 +1,4 @@
-# Home Glance v1.2.1 Tracker Fix
+# Home Glance v1.2.3 Verified Date Fix
 
 Designed for Amazon Fire HD with Silk Browser.
 
@@ -32,3 +32,15 @@ Tracker now uses the same verified logic as the iPhone Scriptable shortcut:
 1. Resolve the distribution region from postcode.
 2. Build the exact regional Tracker tariff code.
 3. Use Octopus's newest-first results: item 1 is today and item 0 is tomorrow.
+
+## v1.2.2 corrections
+- Tracker prices are matched by each rate's `valid_from` date in Europe/London.
+- Before tomorrow's price is published, today no longer shifts to yesterday.
+- After tomorrow is published, today and tomorrow remain correctly labelled.
+- HKO calendar cache is refreshed so official solar terms such as 大暑 can appear.
+
+## v1.2.3 verified correction
+- Bundles official HKO solar-term dates for 2026 and 2027.
+- Solar terms now work when opened directly with `file://`, even when the browser blocks the HKO cross-origin fetch.
+- Verified test: `2026-07-23` returns `大暑`.
+- Tracker continues to match rates by `valid_from` in `Europe/London`, not result position.

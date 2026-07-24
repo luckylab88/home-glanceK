@@ -50,17 +50,52 @@
     });
   }
 
-  function readTodayTomorrow(results){
-    // Exact working Shortcut logic:
-    // Octopus API returns newest first.
-    if(!results || results.length<2){
-      return {today:null,tomorrow:null};
-    }
+  function londonDateKey(value){
+    var parts=new Intl.DateTimeFormat("en-CA",{
+      timeZone:"Europe/London",
+      year:"numeric",
+      month:"2-digit",
+      day:"2-digit"
+    }).formatToParts(new Date(value));
 
-    return {
-      today:Number(results[1].value_inc_vat),
-      tomorrow:Number(results[0].value_inc_vat)
-    };
+    var y="",m="",d="";
+    parts.forEach(function(part){
+      if(part.type==="year") y=part.value;
+      if(part.type==="month") m=part.value;
+      if(part.type==="day") d=part.value;
+    });
+    return y+"-"+m+"-"+d;
+  }
+
+  function tomorrowKey(){
+    var now=new Date();
+    var todayKey=londonDateKey(now);
+    var probe=new Date(now.getTime()+24*60*60*1000);
+
+    // Advance until the Europe/London calendar date changes.
+    while(londonDateKey(probe)===todayKey){
+      probe=new Date(probe.getTime()+60*60*1000);
+    }
+    return londonDateKey(probe);
+  }
+
+  function readTodayTomorrow(results){
+    var todayKey=londonDateKey(new Date());
+    var nextKey=tomorrowKey();
+    var today=null;
+    var tomorrow=null;
+
+    (results||[]).forEach(function(row){
+      if(row.value_inc_vat===undefined || !row.valid_from) return;
+
+      var dateKey=londonDateKey(row.valid_from);
+      var price=Number(row.value_inc_vat);
+
+      if(dateKey===todayKey && isFinite(price)) today=price;
+      if(dateKey===nextKey && isFinite(price)) tomorrow=price;
+    });
+
+    return {today:today,tomorrow:tomorrow};
   }
 
   function load(force){

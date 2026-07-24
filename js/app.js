@@ -228,7 +228,7 @@
     if(!panel || !isDebug()) return;
     panel.hidden=false;
     panel.textContent=
-      "Home Glance v1.1 Stable\n"+
+      "Home Glance v1.2.3\n"+
       "Weather: Open-Meteo\n"+
       "Lunar / Solar term: "+window.HomeGlanceLunar.getStatus()+"\n"+
       "Warning: "+window.HomeGlanceWarnings.getStatus()+"\n"+
